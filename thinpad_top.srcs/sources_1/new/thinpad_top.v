@@ -87,9 +87,9 @@ always@(posedge clk_10M or posedge reset_of_clk10M) begin
 end
 
 // 不使用内存、串口时，禁用其使能信号
-assign base_ram_ce_n = 1'b1;
-assign base_ram_oe_n = 1'b1;
-assign base_ram_we_n = 1'b1;
+// assign base_ram_ce_n = 1'b1;
+// assign base_ram_oe_n = 1'b1;
+// assign base_ram_we_n = 1'b1;
 
 assign ext_ram_ce_n = 1'b1;
 assign ext_ram_oe_n = 1'b1;
@@ -183,4 +183,14 @@ vga #(12, 800, 856, 976, 1040, 600, 637, 643, 666, 1, 1) vga800x600at75 (
 );
 /* =========== Demo code end =========== */
 
+/* my code begin */
+
+assign base_ram_ce_n = 1'b0;
+assign base_ram_oe_n = 1'b0;
+assign base_ram_we_n = 1'b0;
+assign base_ram_addr = 20'd0;
+assign base_ram_data = 32'h12345678;
+
+
+/* my code end */
 endmodule
