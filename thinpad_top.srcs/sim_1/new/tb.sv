@@ -201,4 +201,8 @@ initial begin
         ext2.mem_array1[i] = tmp_array[i][0+:8];
     end
 end
+
+// my test of pc
+
+
 endmodule

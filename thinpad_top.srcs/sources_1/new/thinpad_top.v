@@ -185,11 +185,23 @@ vga #(12, 800, 856, 976, 1040, 600, 637, 643, 666, 1, 1) vga800x600at75 (
 
 /* my code begin */
 
+reg [31:0] write_data;
+reg [19:0] write_addr;
 assign base_ram_ce_n = 1'b0;
 assign base_ram_oe_n = 1'b0;
 assign base_ram_we_n = 1'b0;
-assign base_ram_addr = 20'd0;
-assign base_ram_data = 32'h12345678;
+assign base_ram_addr = write_addr;
+assign base_ram_data = write_data;
+always @(posedge clock_btn) begin
+    if(reset_btn)begin //复位按下，设置LED为初始值
+        write_data <= 32'h12345678;
+        write_addr <= 20'd0;
+    end
+    else begin
+        write_data <= write_data + 4;
+        write_addr <= write_addr + 4;
+    end
+end
 
 
 /* my code end */
