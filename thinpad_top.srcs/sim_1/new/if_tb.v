@@ -25,6 +25,7 @@ end
 initial
 begin
     #(PERIOD*2) reset  =  1;
+    #(PERIOD*2) reset = 0;
 end
 
 Inst_fetch  u_Inst_fetch (
@@ -34,7 +35,7 @@ Inst_fetch  u_Inst_fetch (
     .is_branch               ( is_branch         ),
     .target_pc               ( target_pc  [31:0] ),
 
-    .pc                      ( pc         [31:0] )
+    .current_pc                      ( pc         [31:0] )
 );
 
 initial
