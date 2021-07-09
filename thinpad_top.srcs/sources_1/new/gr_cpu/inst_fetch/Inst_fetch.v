@@ -4,11 +4,10 @@ module Inst_fetch (
     input wire stall_pc,
     input wire is_branch,
     input wire [31:0] target_pc,
-    output wire [31:0] pc
+    output wire [31:0] current_pc
 );
-    reg [31:0] new_pc;
-    reg [31:0] current_pc;
-    assign pc = current_pc;
+    wire [31:0] new_pc;
+    
     Gen_new_PC  u_Gen_new_PC (
         .reset                   ( reset        ),
         .is_branch               ( is_branch    ),
