@@ -6,6 +6,17 @@ module tb_Control_ram;
 parameter PERIOD  = 10;
 
 
+// Inst_fetch Inputs
+reg   clk                                  = 0 ;
+reg   reset                                = 0 ;
+reg   is_branch                            = 0 ;
+reg   [31:0]  target_pc                    = 0 ;
+
+// Inst_fetch Outputs
+wire  [31:0]  pc     ;
+
+
+
 // Control_ram Inputs
 reg   [31:0]  inst_addr                    = 0 ;
 reg   id_read_ram_en                       = 0 ;
@@ -36,15 +47,31 @@ wire  [19:0]  ext_ram_addr                 ;
 wire  [31:0]  base_ram_data                ;
 wire  [31:0]  ext_ram_data                 ;
 
-reg clk = 1;
 
 initial
 begin
     forever #(PERIOD/2)  clk=~clk;
 end
 
+initial
+begin
+    #(PERIOD/2) reset  =  1;
+    #(PERIOD*2) reset = 0;
+end
+
+Inst_fetch  u_Inst_fetch (
+    .clk                     ( clk               ),
+    .reset                   ( reset             ),
+    .stall_pc                ( pc_stall          ),
+    .is_branch               ( is_branch         ),
+    .target_pc               ( target_pc  [31:0] ),
+    .current_pc              ( pc         [31:0] )
+);
+
+
+
 Control_ram  u_Control_ram (
-    .inst_addr               ( inst_addr          [31:0] ),
+    .inst_addr               ( pc          [31:0] ),
     .id_read_ram_en          ( id_read_ram_en            ),
     .id_read_ram_addr        ( id_read_ram_addr   [31:0] ),
     .read_be                 ( read_be            [3:0]  ),
@@ -156,72 +183,19 @@ end
 
 initial
 begin
-    # (PERIOD*2) inst_addr = 32'h80000000;
-    id_read_ram_en = 0;
-    id_read_ram_addr = 32'h80000004;
-    read_be = 4'b0000;
-    wb_write_ram_en = 0;
-    wb_write_ram_data = 32'h12345678;
-    wb_write_ram_addr = 32'h80003000;
-    write_be = 4'b0000;
-
-    # (PERIOD*2) inst_addr = 32'h80000004;
-    id_read_ram_en = 0;
-    id_read_ram_addr = 32'h80400010;
-    read_be = 4'b0000;
-    wb_write_ram_en = 0;
-    wb_write_ram_data = 32'h12345678;
-    wb_write_ram_addr = 32'h80403000;
-    write_be = 4'b0000;
-
-    # (PERIOD*2) inst_addr = 32'h80000008;
-    id_read_ram_en = 0;
-    id_read_ram_addr = 32'h80400004;
-    read_be = 4'b0000;
-    wb_write_ram_en = 0;
-    wb_write_ram_data = 32'h12345678;
-    wb_write_ram_addr = 32'h80401000;
-    write_be = 4'b0000;
-
-    # (PERIOD*2) inst_addr = 32'h800000c;
-    id_read_ram_en = 0;
-    id_read_ram_addr = 32'h80002000;
-    read_be = 4'b0000;
-    wb_write_ram_en = 0;
-    wb_write_ram_data = 32'h12345678;
-    wb_write_ram_addr = 32'h80403000;
-    write_be = 4'b0000;
-
-    # (PERIOD*2) inst_addr = 32'h80000030;
-    id_read_ram_en = 1;
-    id_read_ram_addr = 32'h80002000;
-    read_be = 4'b0000;
-    wb_write_ram_en = 0;
-    wb_write_ram_data = 32'h12345678;
-    wb_write_ram_addr = 32'h80003000;
-    write_be = 4'b0000;
-
-    # (PERIOD*2) inst_addr = 32'h80000004;
-    id_read_ram_en = 0;
-    id_read_ram_addr = 32'h80002000;
-    read_be = 4'b0000;
-    wb_write_ram_en = 0;
-    wb_write_ram_data = 32'h12345678;
-    wb_write_ram_addr = 32'h80403000;
-    write_be = 4'b0000;
-
-    # (PERIOD*2) inst_addr = 32'h80000020;
-    id_read_ram_en = 0;
-    id_read_ram_addr = 32'h80002000;
-    read_be = 4'b0000;
-    wb_write_ram_en = 0;
-    wb_write_ram_data = 32'h12345678;
-    wb_write_ram_addr = 32'h80403000;
-    write_be = 4'b0000;
-    $finish;
+    is_branch = 0 ;
+    target_pc = 0 ;
+    # (PERIOD*5) ;
+    id_read_ram_en = 1 ;
+    id_read_ram_addr = 32'h80000010 ;
+    read_be = 0 ;
+    wb_write_ram_en = 0 ;
+    wb_write_ram_addr = 32'h80000010 ;
+    wb_write_ram_data = 32'h12345678 ;
+    write_be = 0 ;
+    # (PERIOD*5) ;
+    $finish ;
 end
-
-
 
 
 endmodule
