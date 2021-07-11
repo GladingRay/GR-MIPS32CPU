@@ -14,7 +14,7 @@ module ALU (
     assign sub_res = add_res + 1;
 
     wire [31:0] nop_res;
-    assign nop_res = 0;
+    assign nop_res = op1;
 
     wire [31:0] lui_res;
     assign lui_res = {op2[15:0], 16'd0};
