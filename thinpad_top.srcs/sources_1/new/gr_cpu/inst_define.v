@@ -12,4 +12,10 @@
 // funct
 `define ADDU_FUNCT 6'b100001
 
+// alu_op
+`define OP_NOP 4'd0
+`define OP_ADDU 4'd1
+`define OP_LUI 4'd2
+`define OP_SUBU 4'd3
+
 `endif 
