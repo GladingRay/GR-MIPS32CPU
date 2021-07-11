@@ -41,7 +41,7 @@ begin
     op2 = 16'hffff;
 
     #(PERIOD*2);
-    alu_op = `OP_ADD;
+    alu_op = `OP_ADDU;
     op1 = 16'h0123;
     op2 = 16'hffff;
 
@@ -51,7 +51,7 @@ begin
     op2 = 16'h4567;
 
     #(PERIOD*2);
-    alu_op = `OP_SUB;
+    alu_op = `OP_SUBU;
     op1 = 16'hf123;
     op2 = 16'h4567;
     #(PERIOD*2);
