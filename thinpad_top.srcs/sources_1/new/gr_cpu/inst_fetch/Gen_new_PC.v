@@ -7,6 +7,8 @@ module Gen_new_PC (
 );
     wire [31:0] next_pc;
     assign  next_pc = current_pc + 4;
-    assign new_pc = reset ? 32'h80000000 : (is_branch ? target_pc : next_pc);
+    wire [31:0] add_4;
+    assign add_4 = (is_branch ? target_pc : current_pc) + 4;
+    assign new_pc = reset ? 32'h80000000 : add_4;
 
 endmodule
