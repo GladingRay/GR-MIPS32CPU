@@ -1,5 +1,8 @@
 module Control_ram (
-    input wire [31:0] inst_addr,
+    input wire [31:0] current_inst_addr,
+    input wire [31:0] branch_inst_addr,
+    input wire is_branch,
+
     output wire pc_stall,
     output wire [31:0] inst, 
 
@@ -33,6 +36,8 @@ module Control_ram (
     wire inst_ram;
     wire read_ram;
     wire write_ram;
+    wire [31:0] inst_addr;
+    assign inst_addr = is_branch ? branch_inst_addr : current_inst_addr; 
     assign inst_ram = inst_addr[22];   // 0 为baseram
     assign read_ram = id_read_ram_addr[22];
     assign write_ram = wb_write_ram_addr[22];
