@@ -91,9 +91,9 @@ end
 // assign base_ram_oe_n = 1'b1;
 // assign base_ram_we_n = 1'b1;
 
-assign ext_ram_ce_n = 1'b1;
-assign ext_ram_oe_n = 1'b1;
-assign ext_ram_we_n = 1'b1;
+// assign ext_ram_ce_n = 1'b1;
+// assign ext_ram_oe_n = 1'b1;
+// assign ext_ram_we_n = 1'b1;
 
 // 数码管连接关系示意图，dpy1同理
 // p=dpy0[0] // ---a---
@@ -184,24 +184,25 @@ vga #(12, 800, 856, 976, 1040, 600, 637, 643, 666, 1, 1) vga800x600at75 (
 /* =========== Demo code end =========== */
 
 /* my code begin */
+GR_core  u_GR_core (
+    .clk_50M                 ( clk_50M         ),
+    .clk_11M                 ( clk_11M0592     ),
+    .reset                   ( reset_btn       ),
 
-reg [31:0] write_data;
-reg [19:0] write_addr;
-assign base_ram_ce_n = 1'b0;
-assign base_ram_oe_n = 1'b0;
-assign base_ram_we_n = 1'b0;
-assign base_ram_addr = write_addr;
-assign base_ram_data = write_data;
-always @(posedge clock_btn) begin
-    if(reset_btn)begin //复位按下，设置LED为初始值
-        write_data <= 32'h12345678;
-        write_addr <= 20'd0;
-    end
-    else begin
-        write_data <= write_data + 4;
-        write_addr <= write_addr + 4;
-    end
-end
+    .base_ram_addr           ( base_ram_addr   ),
+    .base_ram_be_n           ( base_ram_be_n   ),
+    .base_ram_ce_n           ( base_ram_ce_n   ),
+    .base_ram_oe_n           ( base_ram_oe_n   ),
+    .base_ram_we_n           ( base_ram_we_n   ),
+    .ext_ram_addr            ( ext_ram_addr    ),
+    .ext_ram_be_n            ( ext_ram_be_n    ),
+    .ext_ram_ce_n            ( ext_ram_ce_n    ),
+    .ext_ram_oe_n            ( ext_ram_oe_n    ),
+    .ext_ram_we_n            ( ext_ram_we_n    ),
+
+    .base_ram_data           ( base_ram_data   ),
+    .ext_ram_data            ( ext_ram_data    )
+);
 
 
 /* my code end */

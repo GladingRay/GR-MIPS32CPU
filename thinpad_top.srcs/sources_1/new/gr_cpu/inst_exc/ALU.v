@@ -1,8 +1,8 @@
 `include "inst_define.v"
 module ALU (
     input wire [3:0] alu_op,
-    input wire [15:0] op1,
-    input wire [15:0] op2,
+    input wire [31:0] op1,
+    input wire [31:0] op2,
 
     output reg [31:0] res
 );
@@ -19,12 +19,16 @@ module ALU (
     wire [31:0] lui_res;
     assign lui_res = {op2[15:0], 16'd0};
 
+    wire [31:0] or_res;
+    assign or_res = op1 | op2;
+
     always @(*) begin
         case (alu_op)
             `OP_NOP : res = nop_res;
             `OP_ADDU : res = add_res;
             `OP_LUI : res = lui_res;
             `OP_SUBU : res = sub_res;
+            `OP_OR : res = or_res;
             default : res = nop_res;
         endcase
     end

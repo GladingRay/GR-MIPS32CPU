@@ -2,7 +2,7 @@ module Control_ram (
     input wire [31:0] current_inst_addr,
     input wire [31:0] branch_inst_addr,
     input wire is_branch,
-
+    input wire reset,
     output wire pc_stall,
     output wire [31:0] inst, 
 
@@ -14,7 +14,7 @@ module Control_ram (
 
     input wire wb_write_ram_en,
     input wire [31:0] wb_write_ram_addr,
-    input wire wb_write_ram_data,
+    input wire [31:0] wb_write_ram_data,
     input wire [3:0] write_be,
 
     output wire base_ram_ce_n,
@@ -37,7 +37,8 @@ module Control_ram (
     wire read_ram;
     wire write_ram;
     wire [31:0] inst_addr;
-    assign inst_addr = is_branch ? branch_inst_addr : current_inst_addr; 
+    // assign inst_addr = is_branch ? branch_inst_addr : current_inst_addr; 
+    assign inst_addr = current_inst_addr; 
     assign inst_ram = inst_addr[22];   // 0 为baseram
     assign read_ram = id_read_ram_addr[22];
     assign write_ram = wb_write_ram_addr[22];
@@ -48,8 +49,8 @@ module Control_ram (
 
     wire pc_stall_t;
     wire id_stall_t;
-    assign pc_stall = pc_stall_t;
-    assign id_stall = id_stall_t;
+    assign pc_stall = reset ? 0 : pc_stall_t;
+    assign id_stall = reset ? 0 : id_stall_t;
 
     // gen pc_stall signal
     assign pc_stall_t = (id_read_ram_en & ~(inst_ram ^ read_ram) |
@@ -61,7 +62,7 @@ module Control_ram (
                         wb_write_ram_en & 
                         ~(read_ram ^ write_ram)) ? 1:0;
     // fecth inst
-    assign inst = pc_stall_t ? 32'd0 : (~inst_ram ? base_ram_data : ext_ram_data);
+    assign inst = pc_stall_t | reset ? 32'd0 : (~inst_ram ? base_ram_data : ext_ram_data);
     // assign inst = inst_ram ? base_ram_data : ext_ram_data;
     // gen base ram signals
     assign base_ram_oe_n = ~(~inst_ram & ~pc_stall_t | 

@@ -2,6 +2,7 @@ module Inst_fetch (
     input wire clk,
     input wire reset,
     input wire stall_pc,
+    input wire stall_id,
     input wire is_branch,
     input wire [31:0] target_pc,
 
@@ -32,8 +33,8 @@ module Inst_fetch (
 
     always @(posedge clk) begin
         if(~stall_id) begin
-            inst_out <= inst_in;
-            pc_out <= current_pc;
+            inst_out_id <= reset ? 0 : inst_in;
+            pc_out_id <= reset ? 0 :( is_branch ? target_pc : current_pc);
         end
         
     end

@@ -2,6 +2,7 @@
 
 module Inst_decoder (
     input wire clk,
+    input wire reset,
     input wire [31:0] pc,
     input wire [31:0] inst,
 
@@ -87,13 +88,22 @@ module Inst_decoder (
     assign is_reg1_conflict = (read_reg_addr1 == write_reg_addr) & write_reg_en;
     assign is_reg2_conflict = (read_reg_addr2 == write_reg_addr) & write_reg_en;
     assign is_ram_conflict = (read_ram_addr == write_ram_addr) & write_ram_en;
+    // sovle conflict data
+    wire [31:0] reg1_data;
+    assign reg1_data = is_reg1_conflict ? pre_alu_res : read_reg_data1;
+    wire [31:0] reg2_data;
+    assign reg2_data = is_reg2_conflict ? pre_alu_res : read_reg_data2;
+    wire [31:0] ram_data;
+    assign ram_data = is_ram_conflict ? pre_alu_res : read_ram_data;
 
     // gen target_pc
     wire [31:0] j_target_pc;
     assign j_target_pc = {pc[31:28], instr_index, 2'b00};
 
     wire [31:0] b_target_pc;
-    assign b_target_pc = pc + {{14{immediate[15]}}, immediate , 2'b00};
+    wire [31:0] late_pool_pc;
+    assign late_pool_pc = pc + 4;
+    assign b_target_pc = late_pool_pc + {{14{immediate[15]}}, immediate , 2'b00};
 
     assign target_pc = ~is_branch ? 32'd0 :
                        (op_code == `BNE) ? b_target_pc :j_target_pc;
@@ -103,16 +113,16 @@ module Inst_decoder (
     assign is_branch = is_branch_temp;
     always @(*) begin
         case (op_code)
-            `BNE : is_branch_temp = (read_reg_data1 != read_reg_data2);
+            `BNE : is_branch_temp = (reg1_data != reg2_data);
             default: is_branch_temp = 0;
         endcase
     end
 
     // gen read ram en
-    assign read_ram_en = (op_code == `LW);
+    assign read_ram_en = reset ? 0 : (op_code == `LW);
     
     // gen read ram addr
-    assign read_ram_addr = ram_addr;
+    assign read_ram_addr = reset ? 0 : ram_addr;
 
     // gen write ram en
     wire write_ram_en_temp;
@@ -163,15 +173,15 @@ module Inst_decoder (
     always@(*) begin
         case (op_code)
             `SPECIAL : begin
-                op1_temp = is_reg1_conflict ? pre_alu_res : read_reg_data1;
-                op2_temp = is_reg2_conflict ? pre_alu_res : read_reg_data2;
+                op1_temp = reg1_data;
+                op2_temp = reg2_data;
             end 
             `ORI : begin
-                op1_temp = is_reg2_conflict ? pre_alu_res : read_reg_data2;
+                op1_temp = reg1_data;
                 op2_temp = zero_ext_imm; 
             end
             `LW : begin
-                op1_temp = is_ram_conflict ? pre_alu_res : read_ram_data;
+                op1_temp = ram_data;
                 op2_temp = 0;
             end
             `LUI : begin
@@ -179,7 +189,7 @@ module Inst_decoder (
                 op2_temp = zero_ext_imm;
             end
             `SW : begin
-                op1_temp = is_reg2_conflict ? pre_alu_res : read_reg_data2;
+                op1_temp = reg2_data;
                 op2_temp = 0;
             end
             default: begin
@@ -190,16 +200,19 @@ module Inst_decoder (
     end
 
     always @(posedge clk) begin
-        write_ram_en <= write_ram_en_temp;
-        write_ram_be <= ram_be_temp;
-        write_ram_addr <= ram_addr;
+        
+        write_ram_en <= reset ? 0 : write_ram_en_temp;
+        write_ram_be <= reset ? 0 : ram_be_temp;
+        write_ram_addr <= reset ? 0 : ram_addr;
 
-        write_reg_en <= write_reg_en_temp;
-        write_reg_addr <= write_reg_addr_temp;
+        write_reg_en <= reset ? 0 : write_reg_en_temp;
+        write_reg_addr <= reset ? 0 : write_reg_addr_temp;
 
-        alu_op <= alu_op_temp;
-        op1 <= op1_temp;
-        op2 <= op2_temp;
+        alu_op <= reset ? 0 : alu_op_temp;
+        op1 <= reset ? 0 : op1_temp;
+        op2 <= reset ? 0 : op2_temp;
+        
+        
     end
 
 endmodule
