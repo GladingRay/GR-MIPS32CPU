@@ -201,16 +201,16 @@ module Inst_decoder (
 
     always @(posedge clk) begin
         
-        write_ram_en <= reset ? 0 : write_ram_en_temp;
-        write_ram_be <= reset ? 0 : ram_be_temp;
-        write_ram_addr <= reset ? 0 : ram_addr;
+        write_ram_en <= reset | stall_id ? 0 : write_ram_en_temp;
+        write_ram_be <= reset | stall_id ? 0 : ram_be_temp;
+        write_ram_addr <= reset | stall_id ? 0 : ram_addr;
 
-        write_reg_en <= reset ? 0 : write_reg_en_temp;
-        write_reg_addr <= reset ? 0 : write_reg_addr_temp;
+        write_reg_en <= reset | stall_id ? 0 : write_reg_en_temp;
+        write_reg_addr <= reset | stall_id ? 0 : write_reg_addr_temp;
 
-        alu_op <= reset ? 0 : alu_op_temp;
-        op1 <= reset ? 0 : op1_temp;
-        op2 <= reset ? 0 : op2_temp;
+        alu_op <= reset | stall_id ? 0 : alu_op_temp;
+        op1 <= reset | stall_id ? 0 : op1_temp;
+        op2 <= reset | stall_id ? 0 : op2_temp;
         
         
     end
