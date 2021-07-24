@@ -5,7 +5,7 @@
 `define ORI     6'b001101
 `define LUI     6'b001111
 `define SPECIAL 6'b000000
-`define ADDI    6'b001100
+`define ADDI    6'b001000
 `define MUL     6'b011100
 `define ANDI    6'b001100
 `define ADDIU   6'b001001
@@ -35,9 +35,11 @@
 `define OP_NOP 4'd0
 `define OP_ADDU 4'd1
 `define OP_LUI 4'd2
-`define OP_SUBU 4'd3
 `define OP_OR 4'd4
 `define OP_AND 4'd5
 `define OP_XOR 4'd6
+`define OP_RSHIFT 4'd7
+`define OP_LSHIFT 4'd8
+`define OP_MUL 4'd9
 
 `endif 

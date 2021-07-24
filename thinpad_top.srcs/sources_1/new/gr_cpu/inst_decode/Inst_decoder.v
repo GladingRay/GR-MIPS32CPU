@@ -96,10 +96,17 @@ module Inst_decoder (
     assign reg2_data = is_reg2_conflict ? pre_alu_res : read_reg_data2;
     wire [31:0] ram_data;
     assign ram_data = is_ram_conflict ? pre_alu_res : read_ram_data;
+    
+    //  JR instruction is a little special
+    wire is_JR;
+    assign is_JR = (op_code == `SPECIAL & funct == `JR_FUNCT);
+    // //  SLL instruction's op2 is not reg2_data
+    // wire is_SLL;
+    // assign is_SLL = (op_code == `SPECIAL & funct == `SLL_FUNCT);
 
     // gen target_pc
     wire [31:0] j_target_pc;
-    assign j_target_pc = {pc[31:28], instr_index, 2'b00};
+    assign j_target_pc = is_JR ? reg1_data : {pc[31:28], instr_index, 2'b00};
 
     wire [31:0] b_target_pc;
     wire [31:0] late_pool_pc;
@@ -107,7 +114,12 @@ module Inst_decoder (
     assign b_target_pc = late_pool_pc + {{14{immediate[15]}}, immediate , 2'b00};
 
     assign target_pc = ~is_branch ? 32'd0 :
-                       (op_code == `BNE) ? b_target_pc :j_target_pc;
+                       (op_code == `BNE  |
+                        op_code == `BEQ  |
+                        op_code == `BLEZ |
+                        op_code == `BGTZ 
+                       ) ? b_target_pc : j_target_pc;
+                       
     
     // gen is branch signal
     reg is_branch_temp;
@@ -115,7 +127,13 @@ module Inst_decoder (
     always @(*) begin
         case (op_code)
             `BNE : is_branch_temp = (reg1_data != reg2_data);
-            default: is_branch_temp = 0;
+            `BEQ : is_branch_temp = (reg1_data == reg2_data);
+            `BLEZ: is_branch_temp = (reg1_data <= 0);
+            `BGTZ: is_branch_temp = (reg1_data > 0);
+            `J   : is_branch_temp = 1;
+            `JAL : is_branch_temp = 1;
+            // `JR  : is_branch_temp = 1;
+            default: is_branch_temp = is_JR;
         endcase
     end
 
@@ -135,19 +153,27 @@ module Inst_decoder (
 
     // gen write reg en
     wire write_reg_en_temp;
-    assign write_reg_en_temp = ( op_code == `SPECIAL |
+    assign write_reg_en_temp = ( op_code == `SPECIAL & funct!= `JR_FUNCT |
                                  op_code == `LW      |
                                  op_code == `ORI     |
-                                 op_code == `LUI
+                                 op_code == `LUI     |
+                                 op_code == `LB      |
+                                 op_code == `ADDI    |
+                                 op_code == `ADDIU   |
+                                 op_code == `JAL     |
+                                 op_code == `ANDI    |
+                                 op_code == `MUL
                                );
 
     // gen write reg addr
-    wire [4:0] write_reg_addr_temp;
-    assign write_reg_addr_temp = ( op_code == `LW |
-                                   op_code == `ORI | 
-                                   op_code == `LUI |
-                                   op_code == `LB
-                                 ) ? rt : rd;
+    reg [4:0] write_reg_addr_temp;
+    always @(*) begin
+        case (op_code)
+            `SPECIAL, `MUL : write_reg_addr_temp = rd;
+            `JAL     : write_reg_addr_temp = 5'd31;
+            default: write_reg_addr_temp = rt;
+        endcase
+    end
 
     // gen alu op
     reg [3:0] alu_op_temp;
@@ -156,6 +182,11 @@ module Inst_decoder (
         if(op_code == `SPECIAL) begin
             case (funct)
                 `ADDU_FUNCT : alu_op_temp = `OP_ADDU;
+                `AND_FUNCT  : alu_op_temp = `OP_AND;
+                `OR_FUNCT   : alu_op_temp = `OP_OR;
+                `XOR_FUNCT  : alu_op_temp = `OP_XOR;
+                `SLL_FUNCT  : alu_op_temp = `OP_LSHIFT;
+                `SRL_FUNCT, `SRLV_FUNCT  : alu_op_temp = `OP_RSHIFT;
                 default: alu_op_temp = `OP_NOP;
             endcase
         end
@@ -163,6 +194,9 @@ module Inst_decoder (
             case (op_code)
                 `ORI : alu_op_temp = `OP_OR;
                 `LUI : alu_op_temp = `OP_LUI;
+                `ADDI, `ADDIU, `JAL : alu_op_temp = `OP_ADDU;
+                `ANDI : alu_op_temp = `OP_AND;
+                `MUL : alu_op_temp = `OP_MUL;
                 default: alu_op_temp = `OP_NOP;
             endcase
         end
@@ -176,9 +210,14 @@ module Inst_decoder (
         case (op_code)
             `SPECIAL : begin
                 op1_temp = reg1_data;
-                op2_temp = reg2_data;
+                op2_temp = (funct == `SLL_FUNCT | funct == `SRL_FUNCT) 
+                            ? {27'd0, sa} : reg2_data;
             end 
-            `ORI : begin
+            `MUL : begin
+                op1_temp = reg1_data;
+                op2_temp = reg2_data;
+            end
+            `ORI, `ANDI : begin
                 op1_temp = reg1_data;
                 op2_temp = zero_ext_imm; 
             end
@@ -193,6 +232,14 @@ module Inst_decoder (
             `SW, `SB : begin
                 op1_temp = reg2_data;
                 op2_temp = 0;
+            end
+            `ADDI, `ADDIU : begin
+                op1_temp = reg1_data;
+                op2_temp = sign_ext_imm;
+            end
+            `JAL : begin
+                op1_temp = pc;
+                op2_temp = 32'd8;
             end
             default: begin
                 op1_temp = 0;

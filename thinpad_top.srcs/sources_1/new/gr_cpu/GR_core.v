@@ -18,8 +18,14 @@ module GR_core (
     output wire [3:0] ext_ram_be_n,  //ExtRAM字节使能，低有效。如果不使用字节使能，请保持为0
     output wire ext_ram_ce_n,       //ExtRAM片选，低有效
     output wire ext_ram_oe_n,       //ExtRAM读使能，低有效
-    output wire ext_ram_we_n        //ExtRAM写使能，低有效
+    output wire ext_ram_we_n,        //ExtRAM写使能，低有效
 
+    output wire is_read_serial_data,
+    input wire [31:0] read_serial_data,
+    output wire is_read_serial_state,
+    input wire [31:0] read_serial_state,
+    output wire is_write_serial_data, 
+    output wire [7:0] write_serial_data
 );
     wire clk ;
     assign clk = clk_50M;
@@ -114,7 +120,13 @@ module GR_core (
         .ext_ram_addr            ( ext_ram_addr        ),
 
         .base_ram_data           ( base_ram_data       ),
-        .ext_ram_data            ( ext_ram_data        )
+        .ext_ram_data            ( ext_ram_data        ),
+        .is_read_serial_data     ( is_read_serial_data ),
+        .read_serial_data        ( read_serial_data    ),
+        .is_read_serial_state    ( is_read_serial_state),
+        .read_serial_state       ( read_serial_state   ),
+        .is_write_serial_data    ( is_write_serial_data),
+        .write_serial_data       ( write_serial_data   )
     );
 
     /* ram controller end */
