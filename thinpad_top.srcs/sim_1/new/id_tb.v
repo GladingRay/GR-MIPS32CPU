@@ -15,6 +15,7 @@ reg   [31:0]  pre_alu_res                  = 0 ;
 reg   [31:0]  read_ram_data                = 0 ;
 reg   [31:0]  read_reg_data1               = 0 ;
 reg   [31:0]  read_reg_data2               = 0 ;
+reg   rst_n = 1;
 
 // Inst_decoder Outputs
 wire  is_branch                            ;    
@@ -37,46 +38,56 @@ initial
 begin
     #(PERIOD) ;
     pc = 32'h80000000;
-    inst = 32'h3c010f0f;
+    inst = 32'h0c123456;    // jal 0cxxxxxx
     stall_id = 0;
     pre_alu_res = 32'h11111111;
-    read_ram_data = 32'h22222222;
-    read_reg_data1 = 32'h33333333;
-    read_reg_data2 = 32'h44444444;
+    read_ram_data = 32'h11111111;
+    read_reg_data1 = 32'h11111111;
+    read_reg_data2 = 32'h11111111;
     #(PERIOD) ;
     pc = 32'h80000004;
-    inst = 32'hac010f0f;
+    inst = 32'h00200008;    // jr 
     stall_id = 0;
-    pre_alu_res = 32'h11111111;
+    pre_alu_res = 32'h22222222;
     read_ram_data = 32'h22222222;
-    read_reg_data1 = 32'h33333333;
-    read_reg_data2 = 32'h44444444;
-    #(PERIOD) ;
-    pc = 32'h80000004;
-    inst = 32'h3C02f0f0;
-    stall_id = 0;
-    pre_alu_res = 32'h11111111;
-    read_ram_data = 32'h22222222;
-    read_reg_data1 = 32'h33333333;
-    read_reg_data2 = 32'h44444444;
-    
+    read_reg_data1 = 32'h22222222;
+    read_reg_data2 = 32'h22222222;
     #(PERIOD) ;
     pc = 32'h80000008;
-    inst = 32'h3C010F0F;
+    inst = 32'h08123456;   // j
     stall_id = 0;
-    pre_alu_res = 32'h11111111;
-    read_ram_data = 32'h22222222;
+    pre_alu_res = 32'h33333333;
+    read_ram_data = 32'h33333333;
     read_reg_data1 = 32'h33333333;
-    read_reg_data2 = 32'h44444444;
+    read_reg_data2 = 32'h33333333;
     
     #(PERIOD) ;
     pc = 32'h8000000c;
-    inst = 32'h3C010F0F;
+    inst = 32'h18000000;  // bltz
+    stall_id = 0;
+    pre_alu_res = 32'h44444444;
+    read_ram_data = 32'h44444444;
+    read_reg_data1 = 32'h84444444;
+    read_reg_data2 = 32'h84444444;
+    
+    #(PERIOD) ;
+    pc = 32'h80000010;
+    inst = 32'h1c400000;  // bgtz
     stall_id = 0;
     pre_alu_res = 32'h11111111;
     read_ram_data = 32'h22222222;
     read_reg_data1 = 32'h33333333;
     read_reg_data2 = 32'h44444444;
+
+    #(PERIOD) ;
+    pc = 32'h80000010;
+    inst = 32'h10000000;   // beq
+    stall_id = 0;
+    pre_alu_res = 32'h11111111;
+    read_ram_data = 32'h22222222;
+    read_reg_data1 = 32'h33333333;
+    read_reg_data2 = 32'h44444444;
+    
     #(PERIOD) ;
     $finish;
 end
@@ -86,13 +97,14 @@ begin
     forever #(PERIOD/2)  clk=~clk;
 end
 
-// initial
-// begin
-//     #(PERIOD*2) rst_n  =  1;
-// end
+initial
+begin
+    #(PERIOD) rst_n  =  0;
+end
 
 Inst_decoder  u_Inst_decoder (
     .clk                     ( clk                    ),
+    .reset                   ( rst_n                  ),
     .pc                      ( pc              [31:0] ),
     .inst                    ( inst            [31:0] ),
     .stall_id                ( stall_id               ),

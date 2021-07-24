@@ -8,8 +8,8 @@ parameter PERIOD  = 10;
 
 // ALU Inputs
 reg   [3:0]  alu_op                       = 0 ;
-reg   [15:0]  op1                          = 0 ;
-reg   [15:0]  op2                          = 0 ;
+reg   [31:0]  op1                          = 0 ;
+reg   [31:0]  op2                          = 0 ;
 
 // ALU Outputs
 wire  [31:0]  res                          ;
@@ -27,8 +27,8 @@ wire  [31:0]  res                          ;
 
 ALU  u_ALU (
     .alu_op                 ( alu_op  [3:0]  ),
-    .op1                     ( op1      [15:0] ),
-    .op2                     ( op2      [15:0] ),
+    .op1                     ( op1      [31:0] ),
+    .op2                     ( op2      [31:0] ),
 
     .res                     ( res      [31:0] )
 );
@@ -36,24 +36,21 @@ ALU  u_ALU (
 initial
 begin
     #(PERIOD*2);
-    alu_op = `OP_NOP;
-    op1 = 16'h0123;
-    op2 = 16'hffff;
-
+    alu_op = `OP_LSHIFT;
+    op1 = 32'h1234;
+    op2 = 32'h4;
     #(PERIOD*2);
-    alu_op = `OP_ADDU;
-    op1 = 16'h0123;
-    op2 = 16'hffff;
-
+    alu_op = `OP_RSHIFT;
+    op1 = 32'h5678;
+    op2 = 32'h4;
     #(PERIOD*2);
-    alu_op = `OP_LUI;
-    op1 = 16'h0123;
-    op2 = 16'h4567;
-
+    alu_op = `OP_XOR;
+    op1 = 32'h0123;
+    op2 = 32'h4567;
     #(PERIOD*2);
-    alu_op = `OP_SUBU;
-    op1 = 16'hf123;
-    op2 = 16'h4567;
+    alu_op = `OP_MUL;
+    op1 = 32'h12345;
+    op2 = 32'h54321;
     #(PERIOD*2);
     $finish;
 end
