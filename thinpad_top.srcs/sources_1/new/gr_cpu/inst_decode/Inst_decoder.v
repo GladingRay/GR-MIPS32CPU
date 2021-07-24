@@ -79,6 +79,7 @@ module Inst_decoder (
     always @(*) begin
         case (op_code)
             `LW, `SW : ram_be_temp = 4'b0000;
+            `LB, `SB : ram_be_temp = 4'b0001;
             default: ram_be_temp = 4'b1111;
         endcase
     end
@@ -119,14 +120,14 @@ module Inst_decoder (
     end
 
     // gen read ram en
-    assign read_ram_en = reset ? 0 : (op_code == `LW);
+    assign read_ram_en = reset ? 0 : (op_code == `LW | op_code == `LB);
     
     // gen read ram addr
     assign read_ram_addr = reset ? 0 : ram_addr;
 
     // gen write ram en
     wire write_ram_en_temp;
-    assign write_ram_en_temp = (op_code == `SW);
+    assign write_ram_en_temp = (op_code == `SW | op_code == `SB);
 
     // gen read reg addr
     assign read_reg_addr1 = rs;
@@ -144,7 +145,8 @@ module Inst_decoder (
     wire [4:0] write_reg_addr_temp;
     assign write_reg_addr_temp = ( op_code == `LW |
                                    op_code == `ORI | 
-                                   op_code == `LUI
+                                   op_code == `LUI |
+                                   op_code == `LB
                                  ) ? rt : rd;
 
     // gen alu op
@@ -180,7 +182,7 @@ module Inst_decoder (
                 op1_temp = reg1_data;
                 op2_temp = zero_ext_imm; 
             end
-            `LW : begin
+            `LW, `LB : begin
                 op1_temp = ram_data;
                 op2_temp = 0;
             end
@@ -188,7 +190,7 @@ module Inst_decoder (
                 op1_temp = 0;
                 op2_temp = zero_ext_imm;
             end
-            `SW : begin
+            `SW, `SB : begin
                 op1_temp = reg2_data;
                 op2_temp = 0;
             end
