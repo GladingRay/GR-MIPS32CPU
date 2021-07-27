@@ -31,3 +31,4 @@ Windows平台请使用GBK编码的文件，Linux平台请使用UTF-8编码的文
 - sll       *
 - srl       *
 - xor       *
+- xori      *

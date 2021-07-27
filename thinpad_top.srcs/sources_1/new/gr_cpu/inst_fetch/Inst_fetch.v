@@ -34,7 +34,7 @@ module Inst_fetch (
     always @(posedge clk) begin
         if(~stall_id) begin
             inst_out_id <= reset ? 0 : inst_in;
-            pc_out_id <= reset ? 0 :( is_branch ? target_pc : current_pc);
+            pc_out_id <= reset ? 0 : current_pc;
         end
         
     end

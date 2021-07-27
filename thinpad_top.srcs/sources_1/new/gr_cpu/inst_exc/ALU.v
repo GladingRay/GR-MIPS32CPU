@@ -22,13 +22,16 @@ module ALU (
     assign xor_res = op1 ^ op2;
 
     wire [31:0] lshift_res;
-    assign lshift_res = op1 << op2;
+    assign lshift_res = op2 << op1;
 
     wire [31:0] rshift_res;
-    assign rshift_res = op1 >> op2;
+    assign rshift_res = op2 >> op1;
 
     wire [31:0] mul_res;
     assign mul_res = op1 * op2;
+
+    wire [31:0] and_res;
+    assign and_res = op1 & op2;
 
     always @(*) begin
         case (alu_op)
@@ -40,6 +43,7 @@ module ALU (
             `OP_LSHIFT : res = lshift_res;
             `OP_RSHIFT : res = rshift_res;
             `OP_MUL : res = mul_res;
+            `OP_AND : res = and_res;
             default : res = nop_res;
         endcase
     end

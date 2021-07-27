@@ -92,16 +92,25 @@ module Control_ram (
     // gen base ram signals
     assign base_ram_oe_n = ~(~inst_ram & ~pc_stall_t | 
                              ~read_ram & id_read_ram_en & ~id_stall_t) & ~id_serial;
-    assign base_ram_we_n = ~(wb_write_ram_en & ~write_ram) & ~is_write_serial_data;
+    assign base_ram_we_n = ~(wb_write_ram_en & ~write_ram & ~is_write_serial_data) ;
 
-    assign base_ram_be_n = wb_write_ram_en & ~write_ram ? write_be : 
-                           id_read_ram_en & ~read_ram   ? read_be : 4'd0;
+    assign base_ram_be_n = wb_write_ram_en & ~write_ram & ~is_write_serial_data ? write_be : 
+                           id_read_ram_en & ~read_ram  & ~id_serial ? read_be : 4'd0;
 
-    assign base_ram_addr = wb_write_ram_en & ~write_ram ? wb_write_ram_addr[21:2] : 
-                           id_read_ram_en & ~read_ram   ? id_read_ram_addr[21:2] : 
+    assign base_ram_addr = wb_write_ram_en & ~write_ram & ~is_write_serial_data ? wb_write_ram_addr[21:2] : 
+                           id_read_ram_en & ~read_ram & ~id_serial ? id_read_ram_addr[21:2] : 
                            inst_addr[21:2];
     assign base_ram_data = wb_write_ram_en & ~is_write_serial_data & ~write_ram ? wb_write_ram_data : 32'bz;
-
+    reg [31:0] base_ram_be_data;
+    always @(*) begin
+        case (read_be)
+            4'b1110 : base_ram_be_data = {{28{base_ram_data[7]}},base_ram_data[7:0]};
+            4'b1101 : base_ram_be_data = {{28{base_ram_data[15]}},base_ram_data[15:8]};
+            4'b1011 : base_ram_be_data = {{28{base_ram_data[23]}},base_ram_data[23:16]};
+            4'b0111 : base_ram_be_data = {{28{base_ram_data[31]}},base_ram_data[31:24]};
+            default: base_ram_be_data = base_ram_data;
+        endcase
+    end
     // gen ext_ram_signals
     assign ext_ram_oe_n = ~(inst_ram & ~pc_stall_t | 
                              read_ram & id_read_ram_en & ~id_stall_t) ;
@@ -114,9 +123,18 @@ module Control_ram (
                            id_read_ram_en & read_ram   ? id_read_ram_addr[21:2] : 
                            inst_addr[21:2];
     assign ext_ram_data = wb_write_ram_en & write_ram ? wb_write_ram_data : 32'bz;
-
+    reg [31:0] ext_ram_be_data;
+    always @(*) begin
+        case (read_be)
+            4'b1110 : ext_ram_be_data = {{28{ext_ram_data[7]}},ext_ram_data[7:0]};
+            4'b1101 : ext_ram_be_data = {{28{ext_ram_data[15]}},ext_ram_data[15:8]};
+            4'b1011 : ext_ram_be_data = {{28{ext_ram_data[23]}},ext_ram_data[23:16]};
+            4'b0111 : ext_ram_be_data = {{28{ext_ram_data[31]}},ext_ram_data[31:24]};
+            default: ext_ram_be_data = ext_ram_data;
+        endcase
+    end
     // gen id signals
     assign id_read_ram_data = id_serial ? read_serial_data : (id_read_ram_en & ~id_stall_t ? 
-                              (read_ram ? ext_ram_data : base_ram_data) : 32'bz);
+                              (read_ram ? ext_ram_be_data : base_ram_be_data) : 32'bz);
 
 endmodule

@@ -111,17 +111,17 @@ wire[7:0] number;
 SEG7_LUT segL(.oSEG1(dpy0), .iDIG(number[3:0])); //dpy0是低位数码管
 SEG7_LUT segH(.oSEG1(dpy1), .iDIG(number[7:4])); //dpy1是高位数码管
 
-reg[15:0] led_bits;
-assign leds = led_bits;
+// reg[15:0] led_bits;
+// assign leds = led_bits;
 
-always@(posedge clock_btn or posedge reset_btn) begin
-    if(reset_btn)begin //复位按下，设置LED为初始值
-        led_bits <= 16'h1;
-    end
-    else begin //每次按下时钟按钮，LED循环左移
-        led_bits <= {led_bits[14:0],led_bits[15]};
-    end
-end
+// always@(posedge clock_btn or posedge reset_btn) begin
+//     if(reset_btn)begin //复位按下，设置LED为初始值
+//         led_bits <= 16'h1;
+//     end
+//     else begin //每次按下时钟按钮，LED循环左移
+//         led_bits <= {led_bits[14:0],led_bits[15]};
+//     end
+// end
 
 
 
@@ -141,11 +141,11 @@ vga #(12, 800, 856, 976, 1040, 600, 637, 643, 666, 1, 1) vga800x600at75 (
 );
 //直连串口接收发送演示，从直连串口收到的数据再发送出去
 wire [7:0] ext_uart_rx;
-wire [7:0] ext_uart_tx;
+reg [7:0] ext_uart_tx;
 wire ext_uart_ready, ext_uart_clear, ext_uart_busy;
-wire ext_uart_start;
+reg ext_uart_start;
     
-assign number = ext_uart_tx;
+// assign number = ext_uart_tx;
 
 async_receiver #(.ClkFrequency(50000000),.Baud(9600)) //接收模块，9600无检验位
     ext_uart_r(
@@ -185,19 +185,62 @@ async_transmitter #(.ClkFrequency(50000000),.Baud(9600)) //发送模块，9600�
 /* =========== Demo code end =========== */
 
 /* my code begin */
+
+// 串口读取数据缓冲
+// reg recv_buffer_valid;
+// reg [7:0] recv_buffer;
+// always @(posedge clk_50M) begin
+//     if(reset_btn) begin
+//         recv_buffer_valid <= 0;
+//         recv_buffer <= 0;
+//     end
+//     else begin
+//         if(ext_uart_ready & ~recv_buffer_valid) begin
+//             recv_buffer <= ext_uart_rx;
+//             recv_buffer_valid <= 1;
+//         end
+//         else if(recv_buffer_valid & is_read_serial_data) begin
+//             recv_buffer_valid <= 0;
+//         end
+//     end
+// end
+
+// 串口发送数据缓冲
+
+always @(posedge clk_50M) begin
+    if(reset_btn) begin
+        ext_uart_start <= 0;
+        ext_uart_tx <= 0;
+    end
+    else begin
+        if(~ext_uart_busy & is_write_serial_data) begin
+            ext_uart_start <= 1;
+            ext_uart_tx <= write_serial_data;
+        end
+        else begin
+            ext_uart_start <= 0;
+        end
+    end
+end
+
 wire is_read_serial_data, is_read_serial_state, is_write_serial_data;
 wire [7:0] write_serial_data;
 wire [31:0] serial_state;
 assign serial_state = {30'd0, ext_uart_ready, ~ext_uart_busy};
-// 读取数据后，清楚标志
-assign ext_uart_clear = is_read_serial_data;
+// 读取数据后，清除标志
+assign ext_uart_clear = reset_btn ? 1 : is_read_serial_data;
+
+
 
 wire [31:0] read_serial_data;
 assign read_serial_data = is_read_serial_data & ~is_read_serial_state ? {24'b0, ext_uart_rx} :
                           is_read_serial_state & ~is_read_serial_data ? serial_state : 0;
 
-assign ext_uart_start = is_write_serial_data;
-assign ext_uart_tx = write_serial_data;
+// assign ext_uart_start = is_write_serial_data;
+// assign ext_uart_tx = write_serial_data;
+
+assign leds = serial_state[15:0];
+assign number = read_serial_data;
 
 GR_core  u_GR_core (
     .clk_50M                 ( clk_50M         ),

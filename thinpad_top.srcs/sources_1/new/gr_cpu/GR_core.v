@@ -23,7 +23,6 @@ module GR_core (
     output wire is_read_serial_data,
     input wire [31:0] read_serial_data,
     output wire is_read_serial_state,
-    input wire [31:0] read_serial_state,
     output wire is_write_serial_data, 
     output wire [7:0] write_serial_data
 );
@@ -124,7 +123,6 @@ module GR_core (
         .is_read_serial_data     ( is_read_serial_data ),
         .read_serial_data        ( read_serial_data    ),
         .is_read_serial_state    ( is_read_serial_state),
-        .read_serial_state       ( read_serial_state   ),
         .is_write_serial_data    ( is_write_serial_data),
         .write_serial_data       ( write_serial_data   )
     );
