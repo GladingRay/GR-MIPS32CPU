@@ -142,8 +142,9 @@ vga #(12, 800, 856, 976, 1040, 600, 637, 643, 666, 1, 1) vga800x600at75 (
 //直连串口接收发送演示，从直连串口收到的数据再发送出去
 wire [7:0] ext_uart_rx;
 reg [7:0] ext_uart_tx;
-wire ext_uart_ready, ext_uart_clear, ext_uart_busy;
+wire ext_uart_ready, ext_uart_busy;
 reg ext_uart_start;
+wire ext_uart_clear;
     
 // assign number = ext_uart_tx;
 
@@ -195,11 +196,11 @@ always @(posedge clk_50M) begin
         recv_buffer <= 0;
     end
     else begin
-        if(ext_uart_ready & ~recv_buffer_valid) begin
+        if(ext_uart_ready && ~recv_buffer_valid) begin
             recv_buffer <= ext_uart_rx;
             recv_buffer_valid <= 1;
         end
-        else if(recv_buffer_valid & is_read_serial_data) begin
+        else if(recv_buffer_valid && is_read_serial_data) begin
             recv_buffer_valid <= 0;
         end
     end
@@ -213,7 +214,7 @@ always @(posedge clk_50M) begin
         ext_uart_tx <= 0;
     end
     else begin
-        if(~ext_uart_busy & is_write_serial_data) begin
+        if(~ext_uart_busy && is_write_serial_data) begin
             ext_uart_start <= 1;
             ext_uart_tx <= write_serial_data;
         end
@@ -239,8 +240,7 @@ assign read_serial_data = is_read_serial_data & ~is_read_serial_state ? {24'b0, 
 // assign ext_uart_start = is_write_serial_data;
 // assign ext_uart_tx = write_serial_data;
 
-assign leds = serial_state[15:0];
-assign number = read_serial_data;
+assign leds = {11'd0 , is_write_serial_data, ext_uart_ready, ext_uart_clear, ext_uart_busy};
 
 GR_core  u_GR_core (
     .clk_50M                 ( clk_50M         ),
