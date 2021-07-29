@@ -13,14 +13,11 @@ module Inst_decoder (
     output wire is_branch,
     output wire [31:0] target_pc,
 
-    output wire read_ram_en,
-    output wire [31:0] read_ram_addr,
-    output wire [3:0] read_ram_be,
-    input wire [31:0] read_ram_data,
-
+    output reg [31:0] ram_addr,
+    output reg [3:0] ram_be,
+    output reg read_ram_en,
     output reg write_ram_en,
-    output reg [3:0] write_ram_be,
-    output reg [31:0] write_ram_addr,
+    output reg [31:0] write_ram_data,
 
     output wire [4:0] read_reg_addr1,
     output wire [4:0] read_reg_addr2,
@@ -70,12 +67,12 @@ module Inst_decoder (
     wire [5:0] funct;
     assign funct = inst[5:0];
 
-    wire [31:0] ram_addr;
-    assign ram_addr = (is_reg1_conflict ? pre_alu_res : read_reg_data1) + sign_ext_imm;
+    wire [31:0] ram_addr_temp;
+    assign ram_addr_temp = (is_reg1_conflict ? pre_alu_res : read_reg_data1) + sign_ext_imm;
 
     // gen ram be
     reg [3:0] ram_be_temp;
-    assign read_ram_be = ram_be_temp;
+    // assign read_ram_be = ram_be_temp;
     always @(*) begin
         case (op_code)
             `LW, `SW : ram_be_temp = 4'b0000;
@@ -103,7 +100,7 @@ module Inst_decoder (
     wire [31:0] reg2_data;
     assign reg2_data = is_reg2_conflict ? pre_alu_res : read_reg_data2;
     wire [31:0] ram_data;
-    assign ram_data = is_ram_conflict ? pre_alu_res : read_ram_data;
+    assign ram_data = is_ram_conflict ? pre_alu_res : write_ram_data;
     
     //  JR instruction is a little special
     wire is_JR;
@@ -146,10 +143,8 @@ module Inst_decoder (
     end
 
     // gen read ram en
-    assign read_ram_en = reset ? 0 : (op_code == `LW | op_code == `LB);
-    
-    // gen read ram addr
-    assign read_ram_addr = reset ? 0 : ram_addr;
+    wire read_ram_en_temp;
+    assign read_ram_en_temp = reset ? 0 : (op_code == `LW | op_code == `LB);
 
     // gen write ram en
     wire write_ram_en_temp;
@@ -230,10 +225,10 @@ module Inst_decoder (
                 op1_temp = reg1_data;
                 op2_temp = zero_ext_imm; 
             end
-            `LW, `LB : begin
-                op1_temp = ram_data;
-                op2_temp = 0;
-            end
+            // `LW, `LB : begin
+            //     op1_temp = ram_data;
+            //     op2_temp = 0;
+            // end
             `LUI : begin
                 op1_temp = 0;
                 op2_temp = zero_ext_imm;
@@ -263,9 +258,11 @@ module Inst_decoder (
 
     always @(posedge clk) begin
         
+        ram_be <= reset | stall_id ? 0 : ram_be_temp;
+        ram_addr <= reset | stall_id ? 0 : ram_addr_temp;
+        read_ram_en <= reset ? 0 : read_ram_en_temp;
         write_ram_en <= reset | stall_id ? 0 : write_ram_en_temp;
-        write_ram_be <= reset | stall_id ? 0 : ram_be_temp;
-        write_ram_addr <= reset | stall_id ? 0 : ram_addr;
+        write_ram_data <= reset ? 0 : reg2_data;
 
         write_reg_en <= reset | stall_id ? 0 : write_reg_en_temp;
         write_reg_addr <= reset | stall_id ? 0 : write_reg_addr_temp;
