@@ -77,7 +77,6 @@ module GR_core (
     // Inst_excute Outputs
     wire  [31:0]  write_reg_data;
     
-    wire  [31:0]  pre_alu_res;
 
     // Reg_file Outputs
     wire  [31:0]  read_reg_data1;
@@ -151,7 +150,7 @@ module GR_core (
         .pc                      ( pc_out_id         ),
         .inst                    ( inst_out_id       ),
         .stall_id                ( id_stall          ),
-        .pre_alu_res             ( pre_alu_res       ),
+        .pre_write_reg_res             ( write_reg_data    ),
         
         .read_reg_addr1          ( read_reg_addr1    ),
         .read_reg_addr2          ( read_reg_addr2    ),
@@ -187,9 +186,7 @@ module GR_core (
         .read_ram_data           ( read_ram_data       ),
         .is_read_ram             ( read_ram_en         ),
 
-        .write_reg_data          ( write_reg_data      ),
-        
-        .res_to_id               ( pre_alu_res         )
+        .write_reg_data          ( write_reg_data      )
     );
     /* inst excute begin */
 

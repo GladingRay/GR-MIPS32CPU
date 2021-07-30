@@ -186,6 +186,9 @@ async_transmitter #(.ClkFrequency(50000000),.Baud(9600)) //发送模块，9600�
 /* =========== Demo code end =========== */
 
 /* my code begin */
+wire is_read_serial_data, is_read_serial_state, is_write_serial_data;
+wire [7:0] write_serial_data;
+wire [31:0] serial_state;
 
 // 串口读取数据缓冲
 reg recv_buffer_valid;
@@ -224,9 +227,7 @@ always @(posedge clk_50M) begin
     end
 end
 
-wire is_read_serial_data, is_read_serial_state, is_write_serial_data;
-wire [7:0] write_serial_data;
-wire [31:0] serial_state;
+
 assign serial_state = {30'd0, recv_buffer_valid, ~ext_uart_busy};
 // 读取数据后，清除标志
 assign ext_uart_clear = reset_btn ? 1 : is_read_serial_data;

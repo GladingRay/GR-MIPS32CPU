@@ -15,9 +15,11 @@ module Inst_fetch (
     wire [31:0] new_pc;
     
     Gen_new_PC  u_Gen_new_PC (
+        .clk                     ( clk          ),
         .reset                   ( reset        ),
         .is_branch               ( is_branch    ),
         .current_pc              ( current_pc   ),
+        .stall_pc                ( stall_pc     ),
         .target_pc               ( target_pc    ),
 
         .new_pc                  ( new_pc       )

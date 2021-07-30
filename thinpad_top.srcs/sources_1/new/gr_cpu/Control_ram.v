@@ -36,8 +36,7 @@ module Control_ram (
 
 );
     wire inst_ram;
-    wire read_ram;
-    wire write_ram;
+    wire data_ram;
     wire [31:0] inst_addr;
     // assign inst_addr = is_branch ? branch_inst_addr : current_inst_addr; 
     assign inst_addr = current_inst_addr; 
@@ -131,12 +130,12 @@ module Control_ram (
     // assign ext_ram_be_n = wb_write_ram_en & write_ram ? write_be : 
     //                        id_read_ram_en & read_ram   ? read_be : 4'd0;
 
-    assign ext_ram_addr = pc_stall_t ? ram_addr[21:2] : inst_addr[21:0];
+    assign ext_ram_addr = inst_ram ? inst_addr[21:2] : ram_addr[21:2];
 
     // assign ext_ram_addr = wb_write_ram_en & write_ram ? wb_write_ram_addr[21:2] : 
     //                        id_read_ram_en & read_ram   ? id_read_ram_addr[21:2] : 
     //                        inst_addr[21:2];
-    assign ext_ram_data = write_ram_en & ~is_serial & write_ram ? write_ram_data : 32'bz;
+    assign ext_ram_data = write_ram_en & ~is_serial & data_ram ? write_ram_data : 32'bz;
     reg [31:0] ext_ram_be_data;
     always @(*) begin
         case (ram_be)

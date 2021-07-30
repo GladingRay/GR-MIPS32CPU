@@ -8,7 +8,7 @@ module Inst_decoder (
 
     input wire stall_id,
     
-    input wire [31:0] pre_alu_res,
+    input wire [31:0] pre_write_reg_res,
 
     output wire is_branch,
     output wire [31:0] target_pc,
@@ -70,7 +70,7 @@ module Inst_decoder (
     assign funct = inst[5:0];
 
     wire [31:0] ram_addr_temp;
-    assign ram_addr_temp = (is_reg1_conflict ? pre_alu_res : read_reg_data1) + sign_ext_imm;
+    assign ram_addr_temp = (is_reg1_conflict ? pre_write_reg_res : read_reg_data1) + sign_ext_imm;
 
     // gen ram be
     reg [3:0] ram_be_temp;
@@ -79,7 +79,7 @@ module Inst_decoder (
         case (op_code)
             `LW, `SW : ram_be_temp = 4'b0000;
             `LB, `SB : begin
-                case (ram_addr[1:0])
+                case (ram_addr_temp[1:0])
                     2'b00 : ram_be_temp = 4'b1110;
                     2'b01 : ram_be_temp = 4'b1101;
                     2'b10 : ram_be_temp = 4'b1011;
@@ -95,14 +95,14 @@ module Inst_decoder (
     // gen read after write conflict signal
     assign is_reg1_conflict = (read_reg_addr1 == write_reg_addr) & write_reg_en;
     assign is_reg2_conflict = (read_reg_addr2 == write_reg_addr) & write_reg_en;
-    assign is_ram_conflict = (read_ram_addr == write_ram_addr) & write_ram_en;
+    assign is_ram_conflict = (ram_addr_temp == ram_addr) & write_ram_en;
     // sovle conflict data
     wire [31:0] reg1_data;
-    assign reg1_data = is_reg1_conflict ? pre_alu_res : read_reg_data1;
+    assign reg1_data = is_reg1_conflict ? pre_write_reg_res : read_reg_data1;
     wire [31:0] reg2_data;
-    assign reg2_data = is_reg2_conflict ? pre_alu_res : read_reg_data2;
+    assign reg2_data = is_reg2_conflict ? pre_write_reg_res : read_reg_data2;
     wire [31:0] ram_data;
-    assign ram_data = is_ram_conflict ? pre_alu_res : write_ram_data;
+    assign ram_data = is_ram_conflict ? pre_write_reg_res : write_ram_data;
     
     //  JR instruction is a little special
     wire is_JR;
