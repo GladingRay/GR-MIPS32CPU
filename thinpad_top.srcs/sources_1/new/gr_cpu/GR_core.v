@@ -37,7 +37,7 @@ module GR_core (
     // Control_ram Outputs
     wire  pc_stall;
     wire  [31:0]  inst;
-    wire  [31:0]  id_read_ram_data;
+    wire  [31:0]  read_ram_data;
     wire  id_stall;
     /**************** cpu out *************/
     // wire  base_ram_ce_n;  
@@ -61,11 +61,10 @@ module GR_core (
     wire  is_branch;
     wire  [31:0]  target_pc;
     wire  read_ram_en;
-    wire  [31:0]  read_ram_addr;
-    wire  [3:0]  read_ram_be;
-    wire  id_write_ram_en;
-    wire  [3:0]  id_write_ram_be;
-    wire  [31:0]  id_write_ram_addr;
+    wire  write_ram_en;
+    wire  [31:0]  ram_addr;
+    wire  [3:0]  ram_be;
+    wire  [31:0] write_ram_data;
     wire  [4:0]  read_reg_addr1;
     wire  [4:0]  read_reg_addr2;
     wire  id_write_reg_en;
@@ -77,10 +76,7 @@ module GR_core (
 
     // Inst_excute Outputs
     wire  [31:0]  write_reg_data;
-    wire  write_ram_en;
-    wire  [31:0]  write_ram_addr;
-    wire  [31:0]  write_ram_data;
-    wire  [3:0]   write_ram_be;
+    
     wire  [31:0]  pre_alu_res;
 
     // Reg_file Outputs
@@ -95,17 +91,16 @@ module GR_core (
         .branch_inst_addr        ( target_pc           ),
         .is_branch               ( is_branch           ),
         .reset                   ( reset               ),
-        .id_read_ram_en          ( read_ram_en         ),
-        .id_read_ram_addr        ( read_ram_addr       ),
-        .read_be                 ( read_ram_be         ),
-        .wb_write_ram_en         ( write_ram_en        ),
-        .wb_write_ram_addr       ( write_ram_addr      ),
-        .wb_write_ram_data       ( write_ram_data      ),
-        .write_be                ( write_ram_be        ),
-
         .pc_stall                ( pc_stall            ),
         .inst                    ( inst                ),
-        .id_read_ram_data        ( id_read_ram_data    ),
+
+        .read_ram_en             ( read_ram_en         ),
+        .write_ram_en            ( write_ram_en        ),
+        .ram_addr                ( ram_addr            ),
+        .ram_be                  ( ram_be              ),
+        .write_ram_data          ( write_ram_data      ),
+        .read_ram_data           ( read_ram_data       ),
+
         .id_stall                ( id_stall            ),
         .base_ram_ce_n           ( base_ram_ce_n       ),
         .base_ram_oe_n           ( base_ram_oe_n       ),
@@ -157,20 +152,21 @@ module GR_core (
         .inst                    ( inst_out_id       ),
         .stall_id                ( id_stall          ),
         .pre_alu_res             ( pre_alu_res       ),
-        .read_ram_data           ( id_read_ram_data  ),
+        
+        .read_reg_addr1          ( read_reg_addr1    ),
+        .read_reg_addr2          ( read_reg_addr2    ),
         .read_reg_data1          ( read_reg_data1    ),
         .read_reg_data2          ( read_reg_data2    ),
 
         .is_branch               ( is_branch         ),
         .target_pc               ( target_pc         ),
+
         .read_ram_en             ( read_ram_en       ),
-        .read_ram_addr           ( read_ram_addr     ),
-        .read_ram_be             ( read_ram_be       ),
-        .write_ram_en            ( id_write_ram_en      ),
-        .write_ram_be            ( id_write_ram_be      ),
-        .write_ram_addr          ( id_write_ram_addr    ),
-        .read_reg_addr1          ( read_reg_addr1    ),
-        .read_reg_addr2          ( read_reg_addr2    ),
+        .write_ram_en            ( write_ram_en      ),
+        .ram_addr                ( ram_addr          ),
+        .ram_be                  ( ram_be            ),
+        .write_ram_data          ( write_ram_data    ),
+
         .write_reg_en            ( id_write_reg_en   ),
         .write_reg_addr          ( id_write_reg_addr ),
         .alu_op                  ( alu_op            ),
@@ -188,15 +184,11 @@ module GR_core (
         .alu_op                  ( alu_op              ),
         .op1                     ( op1                 ),
         .op2                     ( op2                 ),
-        .write_ram_en_in         ( id_write_ram_en     ),
-        .write_ram_addr_in       ( id_write_ram_addr   ),
-        .write_ram_be_in         ( id_write_ram_be     ),
+        .read_ram_data           ( read_ram_data       ),
+        .is_read_ram             ( read_ram_en         ),
 
         .write_reg_data          ( write_reg_data      ),
-        .write_ram_en            ( write_ram_en        ),
-        .write_ram_addr          ( write_ram_addr      ),
-        .write_ram_data          ( write_ram_data      ),
-        .write_ram_be            ( write_ram_be        ),
+        
         .res_to_id               ( pre_alu_res         )
     );
     /* inst excute begin */

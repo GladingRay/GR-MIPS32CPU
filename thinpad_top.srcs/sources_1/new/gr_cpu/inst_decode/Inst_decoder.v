@@ -13,16 +13,18 @@ module Inst_decoder (
     output wire is_branch,
     output wire [31:0] target_pc,
 
-    output reg [31:0] ram_addr,
-    output reg [3:0] ram_be,
-    output reg read_ram_en,
-    output reg write_ram_en,
-    output reg [31:0] write_ram_data,
+    
 
     output wire [4:0] read_reg_addr1,
     output wire [4:0] read_reg_addr2,
     input wire [31:0] read_reg_data1,
     input wire [31:0] read_reg_data2,
+
+    output reg [31:0] ram_addr,
+    output reg [3:0] ram_be,
+    output reg read_ram_en,
+    output reg write_ram_en,
+    output reg [31:0] write_ram_data,
 
     output reg write_reg_en,
     output reg [4:0] write_reg_addr,
