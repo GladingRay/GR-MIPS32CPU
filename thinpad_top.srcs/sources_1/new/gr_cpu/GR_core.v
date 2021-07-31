@@ -1,7 +1,5 @@
 module GR_core (
-    input wire clk_50M,
-    input wire clk_11M,
-
+    input wire clk,
     input wire reset,
 
     //BaseRAM信号
@@ -26,8 +24,6 @@ module GR_core (
     output wire is_write_serial_data, 
     output wire [7:0] write_serial_data
 );
-    wire clk ;
-    assign clk = clk_50M;
     // Inst_fetch Outputs
     wire  [31:0]  current_pc;
     wire  [31:0]  inst_out_id;
