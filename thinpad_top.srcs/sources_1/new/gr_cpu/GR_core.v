@@ -28,7 +28,7 @@ module GR_core (
     wire  [31:0]  current_pc;
     wire  [31:0]  inst_out_id;
     wire  [31:0]  pc_out_id;
-
+    wire  is_cache_hit;
 
     // Control_ram Outputs
     wire  pc_stall;
@@ -83,8 +83,7 @@ module GR_core (
 
     Control_ram  u_Control_ram (
         .current_inst_addr       ( current_pc          ),
-        .branch_inst_addr        ( target_pc           ),
-        .is_branch               ( is_branch           ),
+        .inst_cache_hit          ( is_cache_hit        ),
         .reset                   ( reset               ),
         .pc_stall                ( pc_stall            ),
         .inst                    ( inst                ),
@@ -130,6 +129,7 @@ module GR_core (
         .target_pc               ( target_pc     ),
         .inst_in                 ( inst          ),
 
+        .is_cache_hit            ( is_cache_hit  ),
         .current_pc              ( current_pc    ),
         .inst_out_id             ( inst_out_id   ),
         .pc_out_id               ( pc_out_id     )

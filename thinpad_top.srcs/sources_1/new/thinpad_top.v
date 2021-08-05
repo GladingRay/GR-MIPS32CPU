@@ -156,7 +156,7 @@ wire ext_uart_clear;
 
 async_receiver #(.ClkFrequency(50000000),.Baud(9600)) //接收模块，9600无检验位
     ext_uart_r(
-        .clk(clk_60M),                       //外部时钟信号
+        .clk(clk_50M),                       //外部时钟信号
         .RxD(rxd),                           //外部串行信号输入
         .RxD_data_ready(ext_uart_ready),  //数据接收到标志
         .RxD_clear(ext_uart_clear),       //清除接收标志
@@ -183,7 +183,7 @@ async_receiver #(.ClkFrequency(50000000),.Baud(9600)) //接收模块，9600无�
 
 async_transmitter #(.ClkFrequency(50000000),.Baud(9600)) //发送模块，9600无检验位
     ext_uart_t(
-        .clk(clk_60M),                  //外部时钟信号
+        .clk(clk_50M),                  //外部时钟信号
         .TxD(txd),                      //串行信号输出
         .TxD_busy(ext_uart_busy),       //发送器忙状态指示
         .TxD_start(ext_uart_start),    //开始发送信号
@@ -199,7 +199,7 @@ wire [31:0] serial_state;
 // 串口读取数据缓冲
 reg recv_buffer_valid;
 reg [7:0] recv_buffer;
-always @(posedge clk_60M) begin
+always @(posedge clk_50M) begin
     if(reset_btn) begin
         recv_buffer_valid <= 0;
         recv_buffer <= 0;
@@ -217,7 +217,7 @@ end
 
 // 串口发送数据缓冲
 
-always @(posedge clk_60M) begin
+always @(posedge clk_50M) begin
     if(reset_btn) begin
         ext_uart_start <= 0;
         ext_uart_tx <= 0;
@@ -250,8 +250,8 @@ assign read_serial_data = is_read_serial_data & ~is_read_serial_state ? {24'b0, 
 assign leds = {11'd0 , is_write_serial_data, ext_uart_ready, ext_uart_clear, ext_uart_busy};
 
 GR_core  u_GR_core (
-    .clk                     ( clk_60M         ),
-    .reset                   ( reset_of_clk60M ),
+    .clk                     ( clk_10M         ),
+    .reset                   ( reset_btn       ),
 
     .base_ram_addr           ( base_ram_addr   ),
     .base_ram_be_n           ( base_ram_be_n   ),

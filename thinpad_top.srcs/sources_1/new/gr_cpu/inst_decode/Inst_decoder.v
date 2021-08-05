@@ -120,7 +120,7 @@ module Inst_decoder (
     assign late_pool_pc = pc + 4;
     assign b_target_pc = late_pool_pc + {{14{immediate[15]}}, immediate , 2'b00};
 
-    assign target_pc = ~is_branch ? 32'd0 :
+    assign target_pc = 
                        (op_code == `BNE  |
                         op_code == `BEQ  |
                         op_code == `BLEZ |

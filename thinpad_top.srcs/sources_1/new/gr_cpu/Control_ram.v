@@ -1,7 +1,7 @@
 module Control_ram (
     input wire [31:0] current_inst_addr,
-    input wire [31:0] branch_inst_addr,
-    input wire is_branch,
+
+    input wire inst_cache_hit,
     input wire reset,
     output wire pc_stall,
     output wire [31:0] inst, 
@@ -74,13 +74,13 @@ module Control_ram (
     assign id_stall = reset ? 0 : id_stall_t;
 
     // gen pc_stall signal
-    assign pc_stall_t = (read_ram_en|write_ram_en) & ~(is_serial) & ~(inst_ram ^ data_ram) | id_stall_t;
+    assign pc_stall_t = (read_ram_en|write_ram_en) & ~(is_serial) & ~(inst_ram ^ data_ram) & ~inst_cache_hit | id_stall_t;
 
     // gen id_stall signal
     assign id_stall_t = 0;
 
     // fecth inst
-    assign inst = pc_stall_t | reset ? 32'd0 : (~inst_ram ? base_ram_data : ext_ram_data);
+    assign inst = reset | pc_stall_t ? 32'h34000000 : (~inst_ram ? base_ram_data : ext_ram_data);
     
     // gen base ram signals 
     assign base_ram_oe_n = ~(
