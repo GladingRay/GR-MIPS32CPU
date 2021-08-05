@@ -1,0 +1,158 @@
+/*
+
+Xilinx Vivado v2019.2 (64-bit) [Major: 2019, Minor: 2]
+SW Build: 2708876 on Wed Nov  6 21:40:23 MST 2019
+IP Build: 2700528 on Thu Nov  7 00:09:20 MST 2019
+
+Process ID (PID): 1060
+License: Customer
+
+Current time: 	Thu Aug 05 21:43:03 CST 2021
+Time zone: 	China Standard Time (Asia/Shanghai)
+
+OS: Windows 10
+OS Version: 10.0
+OS Architecture: amd64
+Available processors (cores): 4
+
+Screen size: 1366x768
+Screen resolution (DPI): 100
+Available screens: 2
+Available disk space: 21 GB
+Default font: family=Dialog,name=Dialog,style=plain,size=12
+
+Java version: 	9.0.4 64-bit
+Java home: 	D:/vivado2019.2/Vivado/2019.2/tps/win64/jre9.0.4
+Java executable location: 	D:/vivado2019.2/Vivado/2019.2/tps/win64/jre9.0.4/bin/java.exe
+Java initial memory (-Xms): 	128 MB
+Java maximum memory (-Xmx):	 3 GB
+
+
+User name: 	GR
+User home directory: C:/Users/w
+User working directory: E:/aGr_CPU/last/Last/2021118
+User country: 	CN
+User language: 	zh
+User locale: 	zh_CN
+
+RDI_BASEROOT: D:/vivado2019.2/Vivado
+HDI_APPROOT: D:/vivado2019.2/Vivado/2019.2
+RDI_DATADIR: D:/vivado2019.2/Vivado/2019.2/data
+RDI_BINDIR: D:/vivado2019.2/Vivado/2019.2/bin
+
+Vivado preferences file location: C:/Users/w/AppData/Roaming/Xilinx/Vivado/2019.2/vivado.xml
+Vivado preferences directory: C:/Users/w/AppData/Roaming/Xilinx/Vivado/2019.2/
+Vivado layouts directory: C:/Users/w/AppData/Roaming/Xilinx/Vivado/2019.2/layouts
+PlanAhead jar file location: 	D:/vivado2019.2/Vivado/2019.2/lib/classes/planAhead.jar
+Vivado log file location: 	E:/aGr_CPU/last/Last/2021118/vivado.log
+Vivado journal file location: 	E:/aGr_CPU/last/Last/2021118/vivado.jou
+Engine tmp dir: 	E:/aGr_CPU/last/Last/2021118/.Xil/Vivado-1060-DESKTOP-GMI5ITQ
+
+Xilinx Environment Variables
+----------------------------
+XILINX: D:/vivado2019.2/Vivado/2019.2/ids_lite/ISE
+XILINX_DSP: D:/vivado2019.2/Vivado/2019.2/ids_lite/ISE
+XILINX_PLANAHEAD: D:/vivado2019.2/Vivado/2019.2
+XILINX_VIVADO: D:/vivado2019.2/Vivado/2019.2
+XILINX_VIVADO_HLS: D:/vivado2019.2/Vivado/2019.2
+
+
+GUI allocated memory:	186 MB
+GUI max memory:		3,072 MB
+Engine allocated memory: 683 MB
+
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// TclEventType: PROJECT_OPEN_DIALOG
+// bB (cr):  Open Project : addNotify
+// Opening Vivado Project: E:\aGr_CPU\last\Last\2021118\thinpad_top.xpr. Version: Vivado v2019.2 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: FILE_SET_NEW
+// Tcl Message: open_project E:/aGr_CPU/last/Last/2021118/thinpad_top.xpr 
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: LOAD_FEATURE
+// HMemoryUtils.trashcanNow. Engine heap size: 803 MB. GUI used memory: 51 MB. Current time: 8/5/21, 9:43:05 PM CST
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 108 MB (+110984kb) [00:00:18]
+// [Engine Memory]: 827 MB (+715487kb) [00:00:18]
+// WARNING: HEventQueue.dispatchEvent() is taking  4344 ms.
+// Tcl Message: open_project E:/aGr_CPU/last/Last/2021118/thinpad_top.xpr 
+// Tcl Message: INFO: [Project 1-313] Project file moved from 'E:/aGr_CPU/2021118' since last save. 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [filemgmt 56-1] IPUserFilesDir: Directory not found as 'E:/aGr_CPU/last/Last/2021118/thinpad_top.ip_user_files'; using path 'E:/aGr_CPU/2021118/thinpad_top.ip_user_files' instead. INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/vivado2019.2/Vivado/2019.2/data/ip'. 
+// Tcl Message: open_project: Time (s): cpu = 00:00:23 ; elapsed = 00:00:11 . Memory (MB): peak = 849.254 ; gain = 217.457 
+// Project name: thinpad_top; location: E:/aGr_CPU/last/Last/2021118; part: xc7a200tfbg676-2
+dismissDialog("Open Project"); // bB (cr)
+// a (cr): Critical Messages: addNotify
+// [GUI Memory]: 116 MB (+2689kb) [00:00:28]
+// Tcl Message: update_compile_order -fileset sources_1 
+// HMemoryUtils.trashcanNow. Engine heap size: 864 MB. GUI used memory: 54 MB. Current time: 8/5/21, 9:43:20 PM CST
+selectButton(PAResourceAtoD.CmdMsgDialog_OK, "OK"); // f (a)
+dismissDialog("Critical Messages"); // a (cr)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Generate Bitstream]", 20, false); // u (O, cr)
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+// A (cr): No Implementation Results Available: addNotify
+selectButton(RDIResource.BaseDialog_YES, "Yes"); // a (A)
+// bB (cr):  Resetting Runs : addNotify
+dismissDialog("No Implementation Results Available"); // A (cr)
+dismissDialog("Resetting Runs"); // bB (cr)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// bB (cr):  Generate Bitstream : addNotify
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: launch_runs impl_1 -to_step write_bitstream -jobs 2 
+// Tcl Message: INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'pll_example'... 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_LAUNCH
+// Tcl Message: INFO: [IP_Flow 19-1686] Generating 'Implementation' target for IP 'pll_example'... 
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// [Engine Memory]: 873 MB (+4860kb) [00:00:38]
+// TclEventType: RUN_MODIFY
+// Tcl Message: [Thu Aug  5 21:43:28 2021] Launched pll_example_synth_1, synth_1... Run output will be captured here: pll_example_synth_1: E:/aGr_CPU/last/Last/2021118/thinpad_top.runs/pll_example_synth_1/runme.log synth_1: E:/aGr_CPU/last/Last/2021118/thinpad_top.runs/synth_1/runme.log 
+// TclEventType: RUN_MODIFY
+// Tcl Message: [Thu Aug  5 21:43:29 2021] Launched impl_1... Run output will be captured here: E:/aGr_CPU/last/Last/2021118/thinpad_top.runs/impl_1/runme.log 
+dismissDialog("Generate Bitstream"); // bB (cr)
+// TclEventType: RUN_STATUS_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 911 MB. GUI used memory: 55 MB. Current time: 8/5/21, 9:43:35 PM CST
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// WARNING: HTimer (ExpRunMgr Pending Runs Timer) is taking 505ms to process. Increasing delay to 3000 ms.
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
