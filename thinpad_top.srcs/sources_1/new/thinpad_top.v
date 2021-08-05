@@ -250,7 +250,7 @@ assign read_serial_data = is_read_serial_data & ~is_read_serial_state ? {24'b0, 
 assign leds = {11'd0 , is_write_serial_data, ext_uart_ready, ext_uart_clear, ext_uart_busy};
 
 GR_core  u_GR_core (
-    .clk                     ( clk_10M         ),
+    .clk                     ( clk_50M         ),
     .reset                   ( reset_btn       ),
 
     .base_ram_addr           ( base_ram_addr   ),
