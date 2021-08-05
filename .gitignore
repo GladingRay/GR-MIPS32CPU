@@ -16,6 +16,7 @@ thinpad_top.ip_user_files/
 thinpad_top.runs/
 thinpad_top.sim/sim_1/behav/xsim/
 thinpad_top.sim/sim_1/synth/
+thinpad_top.sim/sim_1/impl/
 .Xil/
 *.jou
 *.log
