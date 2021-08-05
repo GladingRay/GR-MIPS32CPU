@@ -22,7 +22,6 @@ module Inst_excute (
 
 
     wire  [31:0]  ALU_res;
-    assign res_to_id = reset ? 0 : write_reg_data;
     ALU  u_ALU (
         .alu_op                  ( alu_op   ),
         .op1                     ( op1      ),

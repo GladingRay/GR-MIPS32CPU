@@ -26,9 +26,11 @@ module GR_core (
 );
     // Inst_fetch Outputs
     wire  [31:0]  current_pc;
-    wire  [31:0]  inst_out_id;
+    wire  [31:0]  ram_inst;
+    wire  [31:0]  cache_inst;
     wire  [31:0]  pc_out_id;
     wire  is_cache_hit;
+    wire is_hit_to_id;
 
     // Control_ram Outputs
     wire  pc_stall;
@@ -118,6 +120,7 @@ module GR_core (
 
     /* ram controller end */
 
+
     /* inst fetch begin */
 
     Inst_fetch  u_Inst_fetch (
@@ -131,20 +134,23 @@ module GR_core (
 
         .is_cache_hit            ( is_cache_hit  ),
         .current_pc              ( current_pc    ),
-        .inst_out_id             ( inst_out_id   ),
-        .pc_out_id               ( pc_out_id     )
+        .ram_inst                ( ram_inst      ),
+        .cache_inst              ( cache_inst    ),
+        .pc_out_id               ( pc_out_id     ),
+        .is_hit_to_id            ( is_hit_to_id  )
     );
 
     /* inst fetch end */
 
     /* inst decode begin */
-    
+    wire [31:0] inst_to_id;
+    assign inst_to_id = is_hit_to_id ? cache_inst : ram_inst;
 
     Inst_decoder  u_Inst_decoder (
         .clk                     ( clk               ),
         .reset                   ( reset             ),
         .pc                      ( pc_out_id         ),
-        .inst                    ( inst_out_id       ),
+        .inst                    ( inst_to_id        ),
         .stall_id                ( id_stall          ),
         .pre_write_reg_res             ( write_reg_data    ),
         

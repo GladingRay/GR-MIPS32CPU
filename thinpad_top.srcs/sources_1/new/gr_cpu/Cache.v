@@ -70,6 +70,7 @@ module Cache (
         );
 
     assign cache_hit_data = target_data;
+
     assign is_hit = (target_tag == tag) & v_table[read_index];
     
 endmodule
