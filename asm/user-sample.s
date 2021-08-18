@@ -1,5 +1,5 @@
 .set noreorder
-.set noat
+#.set noat
 .globl __start
 .section text
 
@@ -49,10 +49,10 @@ swapend:
 loop3end:
     bne $a3, $t5, loop3
     addiu $a3, $a3, 1
-    lb $t2, -2($a3)
-    lb $t3, -3($a3)
-    lb $t4, -4($a3)
-    lb $t5, -5($a3)
+    lb $t2, 0($a3)
+    lb $t3, 0($a3)
+    lb $t4, 0($a3)
+    lb $t5, 0($a3)
     addu $t7, $t2, $t3
     addu $t7, $t7, $t4
     addu $t7, $t7, $t5
@@ -68,7 +68,7 @@ loop2end:
     sw $t6, 0($t1)
 loop1end:
     bne $a1, $v0, loop1
-    addiu $a2, $a2, 1
+    addiu $a1, $a1, 1
 
 
 
@@ -81,7 +81,6 @@ loop1end:
     mul $v0, $v0, $t1
     addu $v0, $v0, $a0
 sortloop1:
-
     lw $t1, 0($s2)
     addiu $s3, $s1, 4
 sortloop2:
