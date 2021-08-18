@@ -189,6 +189,7 @@ module Inst_decoder (
             case (funct)
                 `ADDU_FUNCT : alu_op_temp = `OP_ADDU;
                 `AND_FUNCT  : alu_op_temp = `OP_AND;
+                `SLT_FUNCT  : alu_op_temp = `OP_SLT;
                 `OR_FUNCT   : alu_op_temp = `OP_OR;
                 `XOR_FUNCT  : alu_op_temp = `OP_XOR;
                 `SLL_FUNCT  : alu_op_temp = `OP_LSHIFT;

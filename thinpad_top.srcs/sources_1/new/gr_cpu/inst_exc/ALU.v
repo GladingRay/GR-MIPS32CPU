@@ -33,10 +33,13 @@ module ALU (
     wire [31:0] and_res;
     assign and_res = op1 & op2;
 
+    wire [31:0] slt_res;
+    assign slt_res = (op1 < op2) ? 1 : 0;
     always @(*) begin
         case (alu_op)
             `OP_NOP : res = nop_res;
             `OP_ADDU : res = add_res;
+            `OP_SLT : res = slt_res;
             `OP_LUI : res = lui_res;
             `OP_OR : res = or_res;
             `OP_XOR : res = xor_res;

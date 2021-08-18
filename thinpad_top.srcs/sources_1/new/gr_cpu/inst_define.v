@@ -31,6 +31,7 @@
 `define SLL_FUNCT   6'b000000 
 `define SRL_FUNCT   6'b000010 
 `define XOR_FUNCT   6'b100110 
+`define SLT_FUNCT   6'b101010
 
 // alu_op
 `define OP_NOP 4'd0
@@ -42,5 +43,6 @@
 `define OP_RSHIFT 4'd7
 `define OP_LSHIFT 4'd8
 `define OP_MUL 4'd9
+`define OP_SLT 4'd10
 
 `endif 
