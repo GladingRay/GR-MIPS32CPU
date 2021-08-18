@@ -4,7 +4,7 @@
 .section text
 #define swap_if_lt(a,b) \
     slt  $t0, a   , b    ; \
-    beq  $t0, zero, swapend; \
+    beq  $t0, $zero, swapend; \
     nop                   ; \
     xor  b  , b  , a     ; \
     xor  a  , a  , b     ; \
@@ -12,7 +12,7 @@
 
 #define swap(a,b) \
     slt  $t0, a   , b    ; \
-    beq  $t0, zero, swapend1; \
+    beq  $t0, $zero, swapend1; \
     nop                   ; \
     xor  b  , b  , a     ; \
     xor  a  , a  , b     ; \
