@@ -49,10 +49,10 @@ swapend:
 loop3end:
     bne $a3, $t5, loop3
     addiu $a3, $a3, 1
-    lb $t2, 0($a3)
-    lb $t3, 0($a3)
-    lb $t4, 0($a3)
-    lb $t5, 0($a3)
+    lb $t2, -2($a3)
+    lb $t3, -3($a3)
+    lb $t4, -4($a3)
+    lb $t5, -5($a3)
     addu $t7, $t2, $t3
     addu $t7, $t7, $t4
     addu $t7, $t7, $t5
