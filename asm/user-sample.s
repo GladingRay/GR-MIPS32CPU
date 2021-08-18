@@ -48,7 +48,12 @@ loop3:
     addiu $t3, $a3, 1
 loop4:
     lb $t4, 0($t3)
-    swap_if_lt($t2, $t4)
+    slt  $t0, $t2  , $t4    
+    beq  $t0, $zero, swapend
+    nop                   
+    xor  $t4  , $t4  , $t2     
+    xor  $t2  , $t2  , $t4     
+    xor  $t4  , $t4  , $t2
 
 swapend:
     sb $t2, 0($a3)
@@ -96,7 +101,12 @@ sortloop1:
     addiu $s3, $s1, 4
 sortloop2:
     lw $t2, 0($s3)
-    swap($t1, $t2)
+    slt  $t0, $t1  , $t2    
+    beq  $t0, $zero, swapend
+    nop                   
+    xor  $t2  , $t2  , $t1     
+    xor  $t1  , $t1  , $t2     
+    xor  $t2  , $t2  , $t1
 swapend1:
     sw $t1, 0($s2)
     sw $t2, 0($s3)
