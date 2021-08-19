@@ -1,20 +1,20 @@
 .set noreorder
-#.set noat
+.set noat
 .globl __start
 .section text
 
 __start:
 .text
-    ori $v0, $zero, 2999 # people num
-    ori $v1, $zero, 9    # epoch num
-    ori $t1, $zero, 7    # score num
+    ori $v0, $zero, 2999 
+    ori $v1, $zero, 9    
+    ori $t1, $zero, 7    
     lui $a0, 0x8040
 
     ori $a1, $zero, 0
 loop1:
     ori $t0, $zero, 80
     mul $s0, $a1, $t0 
-    ori $t6, 0    # sum
+    ori $t6, $zero, 0   
     ori $a2, $zero, 0
     
 loop2:
@@ -62,7 +62,8 @@ loop3end:
 loop2end:
     bne $a2, $v1, loop2
     addiu $a2, $a2, 1
-    mul $t2, $a2, 4
+    ori $t2, $zero, 4
+    mul $t2, $a2, $t2
     lui $t1, 0x8060
     addu $t1, $t1, $t2
     sw $t6, 0($t1)
@@ -86,7 +87,7 @@ sortloop1:
 sortloop2:
     lw $t2, 0($s3)
     slt  $t0, $t1  , $t2    
-    beq  $t0, $zero, swapend
+    beq  $t0, $zero, swapend1
     nop                   
     xor  $t2  , $t2  , $t1     
     xor  $t1  , $t1  , $t2     
